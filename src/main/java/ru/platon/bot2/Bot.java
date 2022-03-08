@@ -39,7 +39,7 @@ public class Bot extends TelegramLongPollingBot {
                         .chatId(update.getMessage().getChatId().toString())
                         /* извлекает из message.getText() сообщение которое прислал пользователь и
                          * отправляет обратно */
-                        .text("проверка")
+                        .text("Привет "+ update.getMessage().getFrom().getFirstName() + " " + update.getMessage().getFrom().getUserName())
                         .build()
                 );
 //                Message message = update.getMessage();
