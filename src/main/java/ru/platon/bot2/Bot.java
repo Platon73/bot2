@@ -35,28 +35,35 @@ public class Bot extends TelegramLongPollingBot {
         try {
             /* если update имеет сообщение */
             if (update.hasMessage()) {
-                Message message = update.getMessage();
-                Long userId = update.getMessage().getFrom().getId();
-                /* проверяем зарегестрирован ли пользователь */
-                if (userService.userRegistered(userId)) {
-                    /* dfsfs*/
-                    handleMessage(update);
-                    execute(SendMessage.builder()
-                            .chatId(message.getChatId().toString())
-                            /* извлекает из message.getText() сообщение которое прислал пользователь и
-                             * отправляет обратно */
-                            .text("Вы зарегестрированы " + userService.getUesrIsBD(userId).toString())
-                            .build()
-                    );
-                } else {
-                    execute(SendMessage.builder()
-                            .chatId(message.getChatId().toString())
-                            /* извлекает из message.getText() сообщение которое прислал пользователь и
-                             * отправляет обратно */
-                            .text("Вы НЕ зарегестрированы " + update.getMessage().getFrom().getId())
-                            .build()
-                    );
-                }
+                execute(SendMessage.builder()
+                        .chatId(update.getMessage().getChatId().toString())
+                        /* извлекает из message.getText() сообщение которое прислал пользователь и
+                         * отправляет обратно */
+                        .text("проверка")
+                        .build()
+                );
+//                Message message = update.getMessage();
+//                Long userId = update.getMessage().getFrom().getId();
+//                /* проверяем зарегестрирован ли пользователь */
+//                if (userService.userRegistered(userId)) {
+//                    /* dfsfs*/
+//                    handleMessage(update);
+//                    execute(SendMessage.builder()
+//                            .chatId(message.getChatId().toString())
+//                            /* извлекает из message.getText() сообщение которое прислал пользователь и
+//                             * отправляет обратно */
+//                            .text("Вы зарегестрированы " + userService.getUesrIsBD(userId).toString())
+//                            .build()
+//                    );
+//                } else {
+//                    execute(SendMessage.builder()
+//                            .chatId(message.getChatId().toString())
+//                            /* извлекает из message.getText() сообщение которое прислал пользователь и
+//                             * отправляет обратно */
+//                            .text("Вы НЕ зарегестрированы " + update.getMessage().getFrom().getId())
+//                            .build()
+//                    );
+//                }
 //                handleMessage(update.getMessage());
 //                Message message = update.getMessage();
 //                /* если в сообщении есть текст */
