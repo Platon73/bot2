@@ -5,21 +5,27 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.platon.bot2.entities.Status;
+import ru.platon.bot2.entities.User;
+import ru.platon.bot2.repository.UserRepository;
 import ru.platon.bot2.service.CommandHandler;
 import ru.platon.bot2.service.UserService;
+
+import java.util.Optional;
 
 @Component
 @Slf4j
 public class Bot extends TelegramLongPollingBot {
 
     private final UserService userService;
+    private final UserRepository userRepository;
     private final CommandHandler commandHandler;
 
-    public Bot(UserService userService, CommandHandler commandHandler) {
+    public Bot(UserService userService, UserRepository userRepository, CommandHandler commandHandler) {
         this.userService = userService;
+        this.userRepository = userRepository;
         this.commandHandler = commandHandler;
         /* чтобы бот запустился */
         try {
@@ -35,13 +41,29 @@ public class Bot extends TelegramLongPollingBot {
         try {
             /* если update имеет сообщение */
             if (update.hasMessage()) {
-                execute(SendMessage.builder()
-                        .chatId(update.getMessage().getChatId().toString())
-                        /* извлекает из message.getText() сообщение которое прислал пользователь и
-                         * отправляет обратно */
-                        .text("Привет "+ update.getMessage().getFrom().getFirstName() + " " + update.getMessage().getFrom().getUserName())
-                        .build()
-                );
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setChatId(update.getMessage().getChatId().toString());
+                if(userService.userRegistered(update.getMessage().getFrom().getId())){
+                    User user = new User();
+                    user.setId(update.getMessage().getFrom().getId());
+                    user.setName(update.getMessage().getFrom().getFirstName());
+                    user.setStatus(Status.CUSTOMER);
+                    User saveUser = userRepository.save(user);
+                    sendMessage.setText("Сохранили как "+saveUser.toString());
+                } else {
+                    Optional<User> optional = userRepository.findById(update.getMessage().getFrom().getId());
+                    if (optional.isPresent()){
+                        sendMessage.setText("Вы уже были сохранены как "+optional.get().toString());
+                    }
+                }
+                execute(sendMessage);
+//                execute(SendMessage.builder()
+//                        .chatId(update.getMessage().getChatId().toString())
+//                        /* извлекает из message.getText() сообщение которое прислал пользователь и
+//                         * отправляет обратно */
+//                        .text("Привет "+ update.getMessage().getFrom().getFirstName() + " " + update.getMessage().getFrom().getUserName())
+//                        .build()
+//                );
 //                Message message = update.getMessage();
 //                Long userId = update.getMessage().getFrom().getId();
 //                /* проверяем зарегестрирован ли пользователь */
