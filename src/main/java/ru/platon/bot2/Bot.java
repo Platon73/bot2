@@ -40,6 +40,7 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         try {
             /* если update имеет сообщение */
+            String restr = "q";
             if (update.hasMessage()) {
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setChatId(update.getMessage().getChatId().toString());
@@ -49,21 +50,21 @@ public class Bot extends TelegramLongPollingBot {
                     user.setName(update.getMessage().getFrom().getFirstName());
                     user.setStatus(Status.CUSTOMER);
                     User saveUser = userRepository.save(user);
-                    sendMessage.setText("Сохранили как "+saveUser.toString());
+                    restr += "Сохранили как "+saveUser.toString();
                 } else {
                     Optional<User> optional = userRepository.findById(update.getMessage().getFrom().getId());
                     if (optional.isPresent()){
-                        sendMessage.setText("Вы уже были сохранены как "+optional.get().toString());
+                        restr += "Вы уже были сохранены как "+optional.get().toString();
                     }
                 }
-                execute(sendMessage);
-//                execute(SendMessage.builder()
-//                        .chatId(update.getMessage().getChatId().toString())
-//                        /* извлекает из message.getText() сообщение которое прислал пользователь и
-//                         * отправляет обратно */
-//                        .text("Привет "+ update.getMessage().getFrom().getFirstName() + " " + update.getMessage().getFrom().getUserName())
-//                        .build()
-//                );
+
+                execute(SendMessage.builder()
+                        .chatId(update.getMessage().getChatId().toString())
+                        /* извлекает из message.getText() сообщение которое прислал пользователь и
+                         * отправляет обратно */
+                        .text(restr)
+                        .build()
+                );
 //                Message message = update.getMessage();
 //                Long userId = update.getMessage().getFrom().getId();
 //                /* проверяем зарегестрирован ли пользователь */
