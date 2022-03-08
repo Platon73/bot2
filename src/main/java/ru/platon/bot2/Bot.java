@@ -45,20 +45,22 @@ public class Bot extends TelegramLongPollingBot {
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setChatId(update.getMessage().getChatId().toString());
                 if(userService.userRegistered(update.getMessage().getFrom().getId())){
-                    restr += "первый вариант";
+                    restr += " первый вариант ";
+
+
+                } else {
                     User user = new User();
                     user.setId(update.getMessage().getFrom().getId());
                     user.setName(update.getMessage().getFrom().getFirstName());
                     user.setStatus(Status.CUSTOMER);
                     User saveUser = userRepository.save(user);
+                    restr += " второй вариант ";
                     restr += "Сохранили как "+saveUser.toString();
-                } else {
-                    restr += "второй вариант";
                     Optional<User> optional = userRepository.findById(update.getMessage().getFrom().getId());
                     if (optional.isPresent()){
                         restr += "Вы уже были сохранены как "+optional.get().toString();
                     } else {
-                        restr += "третий вариант";
+                        restr += " третий вариант ";
                     }
                 }
 
