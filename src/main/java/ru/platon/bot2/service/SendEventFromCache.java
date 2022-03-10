@@ -34,24 +34,24 @@ public class SendEventFromCache {
             sendMessage.setText("Произошла перезагрузка!");
             bot.execute(sendMessage);
 
-            try {
-                File file = new File("scr/main/resources/data.sql");
-                //создаем объект FileReader для объекта File
-                FileReader fr = new FileReader(file);
-                //создаем BufferedReader с существующего FileReader для построчного считывания
-                BufferedReader reader = new BufferedReader(fr);
-                // считаем сначала первую строку
-                String line = reader.readLine();
-                while (line != null) {
-                    System.out.println("строка в файле "+line);
-                    // считываем остальные строки в цикле
-                    line = reader.readLine();
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                File file = new File("scr/main/resources/insert.sql");
+//                //создаем объект FileReader для объекта File
+//                FileReader fr = new FileReader(file);
+//                //создаем BufferedReader с существующего FileReader для построчного считывания
+//                BufferedReader reader = new BufferedReader(fr);
+//                // считаем сначала первую строку
+//                String line = reader.readLine();
+//                while (line != null) {
+//                    System.out.println("строка в файле "+line);
+//                    // считываем остальные строки в цикле
+//                    line = reader.readLine();
+//                }
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
 //        if (!list.isEmpty()) {
 //            for (EventCashEntity eventCashEntity : list) {
