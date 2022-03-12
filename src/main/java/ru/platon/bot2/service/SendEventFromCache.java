@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.platon.bot2.Bot;
+import ru.platon.bot2.entities.questionnaire.Answer;
 import ru.platon.bot2.repository.AnswerRepository;
 import ru.platon.bot2.repository.CompletedQuestionnaireRepository;
 import ru.platon.bot2.repository.QuestionRepository;
@@ -45,20 +46,29 @@ public class SendEventFromCache {
     private void afterStart() {
         try {
 //        List<eventcashentity> list = eventCashDAO.findAllEventCash();
+            StringBuilder textAdmin = new StringBuilder("Произошла перезагрузка!\n");
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(String.valueOf(admin_id));
 
-//            SendMessage sendMessage = new SendMessage();
-//            sendMessage.setChatId(String.valueOf(admin_id));
-//            sendMessage.setText("Произошла перезагрузка!");
-//            bot.execute(sendMessage);
 
-            /* Если БД пустая */
-            if (answerRepository.count() == 0 &&
-                    cQRepository.count() == 0 &&
-                    qRepository.count() == 0 &&
-                    questionRepository.count() == 0) {
+            /* Если список ответов пустая */
+            if (answerRepository.count() == 0 ) {
                 /* то достаем из файла данные и вставляем */
-                ConnectBD.connectAndExecute("INSERT INTO answer (id, answer) VALUES (1, 'Рим');");
+//                readerInsertFile("answer");
+//                textAdmin.append("Список ответов в БД был пуст и теперь заполнен\n");
             }
+            if (cQRepository.count() == 0){
+
+            }
+            if (qRepository.count() == 0 ){
+
+            }
+            if (questionRepository.count() == 0){
+
+            }
+            /* отправка отчета админу после запуска приложения */
+            sendMessage.setText(textAdmin.toString());
+            bot.execute(sendMessage);
 
 
 //        if (!list.isEmpty()) {
@@ -76,13 +86,15 @@ public class SendEventFromCache {
         }
     }
 
-    private String readerInsertFile() {
-        StringBuilder stringBuilder = new StringBuilder();
+    private void readerInsertFile(String nameFile) {
         try (BufferedReader reader = new BufferedReader(
-                new FileReader(Objects.requireNonNull(getClass().getClassLoader().getResource("insert.txt")).getFile()))) {
+            new FileReader(
+                Objects.requireNonNull(getClass().getClassLoader()
+                    .getResource("dataBD.txt")).getFile()))) {
             String line = reader.readLine();
             while (line != null) {
-                stringBuilder.append(line);
+                String[] arr = line.split(",");
+                answerRepository.save(new Answer(Long.valueOf(arr[0]), arr[1]));
                 line = reader.readLine();
             }
         } catch (FileNotFoundException e) {
@@ -90,6 +102,12 @@ public class SendEventFromCache {
         } catch (IOException e) {
             log.warn("IOException in readerInsertFile" + e.getMessage());
         }
-        return stringBuilder.toString();
+    }
+
+    /**
+     * Метод заполняет БД данными из строк файла
+     */
+    private void fillingBD(){
+
     }
 }

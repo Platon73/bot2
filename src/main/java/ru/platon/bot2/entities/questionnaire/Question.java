@@ -11,7 +11,6 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @ToString
-@NoArgsConstructor
 /* Вопросы */
 @Table(name = "question")
 public class Question {
@@ -21,4 +20,9 @@ public class Question {
     /* сам вопрос */
     @Column(name = "question")
     private String question;
+
+    public Question(Long id, String question) {
+        this.id = id;
+        this.question = question;
+    }
 }
