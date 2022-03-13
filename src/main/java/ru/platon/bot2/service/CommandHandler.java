@@ -21,15 +21,18 @@ import java.util.Optional;
 public class CommandHandler {
 
     public SendMessage searchForTheDesiredCommand(Update update){
+        /* сообщение, которое вернем */
         SendMessage sendMessage = new SendMessage();
+        /* чат куда будем отправлять */
+        sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
 
         Message message = update.getMessage();
         /* ищем команду */
         Optional<MessageEntity> commandEntity = message.getEntities().stream()
-                /* если среди сущностей найден тип bot_command */
-                .filter(el -> "bot_command".equals(el.getType()))
-                /* то возвращаем его */
-                .findFirst();
+            /* если среди сущностей найден тип bot_command */
+            .filter(el -> "bot_command".equals(el.getType()))
+            /* то возвращаем его */
+            .findFirst();
         if (commandEntity.isPresent()) {
             /* берем текст сообщения */
             String command = message.getText()
@@ -38,11 +41,12 @@ public class CommandHandler {
             /* если command */
             /* соответствует /start_testing */
             if (command.equals("/start_testing")) {/* массив листов кнопок */
-                commandStart_testing(sendMessage, message);
+//                commandStart_testing(sendMessage, message);
+                sendMessage.setText("была нажата команда start_testing");
             } else if (command.equals("/start")){
-//                sendMessage = commandSTART(sendMessage, message);
+//                sendingMessage("Вы отправили команду Start", chatId);
             } else {
-                defaultCommand(sendMessage, String.valueOf(update.getMessage().getChatId()));
+//                defaultCommand(sendMessage, String.valueOf(update.getMessage().getChatId()));
             }
         }
         return sendMessage;
@@ -95,5 +99,18 @@ public class CommandHandler {
         }
     }
 
-
+    /**
+     * Метод отправляет сообщение
+     * @param textMessage текст сообщения
+     * @param chatId чат Id куда отправлять
+     */
+    private void sendingMessage(String textMessage, String chatId){
+        /* отправляем сообщение */
+        SendMessage.builder()
+                /* текст сообщения */
+                .text(textMessage)
+                /* в какой чат переслать сообщение */
+                .chatId(chatId)
+                .build();
+    }
 }
