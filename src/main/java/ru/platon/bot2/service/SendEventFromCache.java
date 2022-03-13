@@ -30,15 +30,17 @@ public class SendEventFromCache {
     private final Bot bot;
     private final AnswerRepository answerRepository;
     private final CompletedQuestionnaireRepository cQRepository;
-    private final QuestionnaireRepository qRepository;
+    private final QuestionnaireRepository questionnaireRep;
     private final QuestionRepository questionRepository;
+    private final FillingBD fillingBD;
 
-    public SendEventFromCache(Bot bot, AnswerRepository answerRepository, CompletedQuestionnaireRepository cQRepository, QuestionnaireRepository qRepository, QuestionRepository questionRepository) {
+    public SendEventFromCache(Bot bot, AnswerRepository answerRepository, CompletedQuestionnaireRepository cQRepository, QuestionnaireRepository qRepository, QuestionRepository questionRepository, FillingBD fillingBD) {
         this.bot = bot;
         this.answerRepository = answerRepository;
         this.cQRepository = cQRepository;
-        this.qRepository = qRepository;
+        this.questionnaireRep = qRepository;
         this.questionRepository = questionRepository;
+        this.fillingBD = fillingBD;
     }
 
     @PostConstruct
@@ -54,18 +56,22 @@ public class SendEventFromCache {
             /* Если список ответов пустая */
             if (answerRepository.count() == 0 ) {
                 /* то достаем из файла данные и вставляем */
-//                readerInsertFile("answer");
-//                textAdmin.append("Список ответов в БД был пуст и теперь заполнен\n");
+                fillingBD.fillingAnswer();
+                textAdmin.append("Вставлены ответы\n");
+            }
+            if (questionRepository.count() == 0){
+                fillingBD.fillingQuestion();
+                textAdmin.append("Вставлены вопросы\n");
+            }
+            if (questionnaireRep.count() == 0 ){
+                fillingBD.fillingQuestionnaire();
+                textAdmin.append("Вставлены опросники\n");
             }
             if (cQRepository.count() == 0){
 
             }
-            if (qRepository.count() == 0 ){
 
-            }
-            if (questionRepository.count() == 0){
 
-            }
             /* отправка отчета админу после запуска приложения */
             sendMessage.setText(textAdmin.toString());
             bot.execute(sendMessage);

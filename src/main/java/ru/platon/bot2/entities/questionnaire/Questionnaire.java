@@ -30,4 +30,10 @@ public class Questionnaire {
     @MapKeyColumn(name = "name_key")
     @Column(name = "list_id_answer")
     private Map<Long, String> questionAndAnswer;
+
+    public Questionnaire(Long id, String title, Map<Long, String> questionAndAnswer) {
+        this.id = id;
+        this.title = title;
+        this.questionAndAnswer = questionAndAnswer;
+    }
 }

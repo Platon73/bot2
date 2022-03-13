@@ -11,6 +11,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @ToString
+@NoArgsConstructor
 /* Вопросы */
 @Table(name = "question")
 public class Question {
