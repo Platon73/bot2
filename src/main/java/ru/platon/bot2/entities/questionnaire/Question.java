@@ -21,4 +21,9 @@ public class Question {
     /* сам вопрос */
     @Column(name = "question")
     private String question;
+
+    public Question(Long id, String question) {
+        this.id = id;
+        this.question = question;
+    }
 }

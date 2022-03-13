@@ -20,4 +20,9 @@ public class Answer {
     private Long id;
     @Column(name = "answer")
     private String answer;
+
+    public Answer(Long id, String answer) {
+        this.id = id;
+        this.answer = answer;
+    }
 }
