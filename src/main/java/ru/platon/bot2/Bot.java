@@ -1,15 +1,20 @@
 package ru.platon.bot2;
 
+import antlr.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.platon.bot2.repository.UserRepository;
 import ru.platon.bot2.service.*;
+
+import java.util.List;
 
 /* основной компонент где обрабатывается все что приходит в бот */
 @Component
@@ -49,22 +54,34 @@ public class Bot extends TelegramLongPollingBot {
                 if (update.getMessage().hasText() && update.getMessage().hasEntities()){
                     execute(commandHandler.searchForTheDesiredCommand(update));
                 } else if (update.getMessage().hasText()){
-                    execute(SendMessage.builder()
-                        .text("заглушка")
-                        .chatId(String.valueOf(update.getMessage().getChatId())).build());
+                    if (update.getMessage().getText().equals("опрос")) {
+                        SendMessage sendMessage = new SendMessage();
+                        /* формируем сообщение под кнопкой */
+                        InlineKeyboardMarkup inlineKeyboardMarkup =
+                            buttonService.setInlineKeyboardMarkup(
+                                buttonService.creatInlineButton(
+                                        List.of("Венеция", "Рим","Казань", "Москва")));
+                        executeMessage(sendMessage, update, "Какой город Вы бы выбрали?", inlineKeyboardMarkup);
+                    } else {
+                        execute(SendMessage.builder()
+                            .text("не знаю такой команды")
+                            .chatId(String.valueOf(update.getMessage().getChatId())).build());
+                    }
                 }
             }
             /* пока не знаю что это */
             else if (update.hasChannelPost()) {
 
             }
-            /* если в обновлении есть информаци о нажатой кнопке */
+            /* если в обновлении есть информация о нажатой кнопке под сообщением */
             else if (update.hasCallbackQuery()) {
+                /* получаем сообщение от кнопки */
                 String callDate = update.getCallbackQuery().getData();
-                callbackQueryHandler.creatEditMessageText(callDate, update);
+                EditMessageText editMessageText = callbackQueryHandler.creatEditMessageText(callDate, update);
+                execute(editMessageText);
             }
         } catch (Exception e) {
-            log.warn("Error in onUpdateReceived " + e.getStackTrace());
+            log.warn("Error in onUpdateReceived ", e);
         }
     }
 
@@ -79,8 +96,19 @@ public class Bot extends TelegramLongPollingBot {
         return "5253249290:AAE_zb8dax3bRkNnoQmNbu9M2OQObrKdMpw";
     }
 
-    private <T extends BotApiMethod> void executeMessage(T sendMessage) {
+    private void executeMessage(SendMessage sendMessage,
+                                Update update,
+                                String textMessage,
+                                InlineKeyboardMarkup inlineKeyboardMarkup) {
         try {
+            sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
+            /* если сообщение пустое, то оно не отправится */
+            sendMessage.setText(textMessage);
+            /* если хотим добавить сообщение под кнопкой */
+            if (inlineKeyboardMarkup != null) {
+                /* то добавляем сообщение */
+                sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+            }
             execute(sendMessage);
         } catch (Exception e) {
             log.warn("Error in executeMessage " + e);

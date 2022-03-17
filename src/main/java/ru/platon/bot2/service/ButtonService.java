@@ -12,18 +12,21 @@ import java.util.List;
 @Slf4j
 public class ButtonService {
 
-    public List<List<InlineKeyboardButton>> creatInlineButton(){
+    public List<List<InlineKeyboardButton>> creatInlineButton(List<String> listString){
         List<List<InlineKeyboardButton>> inlineKeyboardButtonList = new ArrayList<>();
         /* ряд кнопок */
         List<InlineKeyboardButton> inlineKeyboardButtonRow = new ArrayList<>();
-        /* Сама кнопка */
-        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-        /* текст который содержится в кнопке */
-        inlineKeyboardButton.setText("92 бензин");
-        /* сообщение которое возвращает телеграмм при нажатии этой кнопки */
-        inlineKeyboardButton.setCallbackData("92 бензин");
 
-        inlineKeyboardButtonRow.add(inlineKeyboardButton);
+        for (String testButton : listString) {
+            /* Сама кнопка */
+            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+            /* текст который содержится в кнопке */
+            inlineKeyboardButton.setText(testButton);
+            /* сообщение, которое возвращает телеграмм при нажатии этой кнопки */
+            inlineKeyboardButton.setCallbackData(testButton);
+
+            inlineKeyboardButtonRow.add(inlineKeyboardButton);
+        }
 
         inlineKeyboardButtonList.add(inlineKeyboardButtonRow);
         return inlineKeyboardButtonList;
