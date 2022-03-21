@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
-/* обработчик команд при нажатии кнопки  */
+/* обработчик команд при нажатии кнопки s  */
 @Service
 public class CallbackQueryHandler {
 
