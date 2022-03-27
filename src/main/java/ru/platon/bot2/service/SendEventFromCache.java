@@ -18,6 +18,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Objects;
 
+/* класс отвечает за запуск алгоритмов при запуске и перезапуске приложения */
 @Component
 @Slf4j
 public class SendEventFromCache {
@@ -43,8 +44,8 @@ public class SendEventFromCache {
         this.fillingBD = fillingBD;
     }
 
+    /* после каждого перезапуска приложения - проверять неизрасходованные события */
     @PostConstruct
-    //after every restart app  - check unspent events
     private void afterStart() {
         try {
 //        List<eventcashentity> list = eventCashDAO.findAllEventCash();
